@@ -6,6 +6,8 @@ import (
 	"image/color"
 	"os"
 	"log"
+	"fmt"
+	"strings"
 )
 
 /**
@@ -43,6 +45,11 @@ func main() {
 			gray.Set(x, y, grayColor)
 			//r,g,b,a := grayColor.RGBA()
 			log.Println("x:",x, " y:", y, " color:", grayColor)
+
+			grayVal := strings.Replace(fmt.Sprint(grayColor), "{", "", 1)
+			grayVal = strings.Replace(fmt.Sprint(grayVal), "}", "", 1)
+
+			fmt.Println(fmt.Sprint(grayVal))
 		}
 	}
 
