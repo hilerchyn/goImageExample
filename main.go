@@ -89,7 +89,13 @@ func main(){
 	f.Write([]byte("G21\n"))
 	time.Sleep(time.Second/2)
 
-	f.Write([]byte("M03 L100\n"))
+	f.Write([]byte("M03 L130\n"))
+
+	//time.Sleep(time.Second * 5)
+
+	//f.Write([]byte("M05\n"))
+
+	//os.Exit(0)
 
 
 	// Create a new grayscale image
@@ -98,71 +104,47 @@ func main(){
 	gray := image.NewGray(bounds)
 
 	//time.Sleep(time.Second*5)
-	for x := 1; x <= w; x++ {
+	for y := 1; y <= h; y++ {
 
-		f.Write([]byte("G01 X1 F50\n"))
-		time.Sleep(time.Second/2)
+		if y>1 {
+			f.Write([]byte("G00 X-"+strconv.Itoa(w)+" Y-1 F0\n"))
+			time.Sleep(time.Second/2)
+		}
 
-		log.Println("X:", x)
+		log.Println("X:", y)
 
-		if x%2 == 0 {
-			for y := h; y >=1; y-- {
-				oldColor := src.At(x, y)
 
-				grayColor := color.GrayModel.Convert(oldColor)
+		for x := 1; x <= w; x++ {
+			oldColor := src.At(x, y)
 
-				gray.Set(x, y, grayColor)
+			grayColor := color.GrayModel.Convert(oldColor)
 
-				grayVal := strings.Replace(fmt.Sprint(grayColor), "{", "", 1)
-				grayVal = strings.Replace(fmt.Sprint(grayVal), "}", "", 1)
+			gray.Set(x, y, grayColor)
 
-				val, _ := strconv.Atoi(grayVal)
-				log.Println("M03 L"+strconv.Itoa(255-val)+"\n")
+			grayVal := strings.Replace(fmt.Sprint(grayColor), "{", "", 1)
+			grayVal = strings.Replace(fmt.Sprint(grayVal), "}", "", 1)
 
-				//f.Write([]byte("M03 L"+strconv.Itoa(255-val)+"\n"))
-				if val == 0 {
-					f.Write([]byte("M03 L200\n"))
-				} else {
-					f.Write([]byte("M03 L1\n"))
-				}
+			val, _ := strconv.Atoi(grayVal)
+			log.Println("M03 L"+strconv.Itoa(255-val)+"\n")
 
-				f.Write([]byte("G01 Y" + strconv.Itoa(1) + " F50\n"))
-				time.Sleep(time.Second/2)
-				//log.Println("G01 Y" + strconv.Itoa(1) + " F50\n")
+			//f.Write([]byte("M03 L"+strconv.Itoa(255-val)+"\n"))
+			if val == 0 {
+				f.Write([]byte("M03 L200\n"))
+			} else {
+				f.Write([]byte("M03 L1\n"))
 			}
-		} else {
-			for y := 1; y <= h; y++ {
-				oldColor := src.At(x, y)
 
-				grayColor := color.GrayModel.Convert(oldColor)
-
-				gray.Set(x, y, grayColor)
-
-				grayVal := strings.Replace(fmt.Sprint(grayColor), "{", "", 1)
-				grayVal = strings.Replace(fmt.Sprint(grayVal), "}", "", 1)
-
-				val, _ := strconv.Atoi(grayVal)
-				log.Println("M03 L"+strconv.Itoa(255-val)+"\n")
-
-				//f.Write([]byte("M03 L"+strconv.Itoa(255-val)+"\n"))
-				if val == 0 {
-					f.Write([]byte("M03 L200\n"))
-				} else {
-					f.Write([]byte("M03 L1\n"))
-				}
-
-				/*
-				if  val <=50 {
-					f.Write([]byte("M03 L5\n"))
-				} else {
-					f.Write([]byte("M03 L100\n"))
-				}
-				*/
-
-				f.Write([]byte("G01 Y-" + strconv.Itoa(1) + " F50\n"))
-				time.Sleep(time.Second/2)
-				//log.Println("G01 Y-" + strconv.Itoa(1) + " F50\n")
+			/*
+			if  val <=50 {
+				f.Write([]byte("M03 L5\n"))
+			} else {
+				f.Write([]byte("M03 L100\n"))
 			}
+			*/
+
+			f.Write([]byte("G01 X" + strconv.Itoa(1) + " \n"))
+			time.Sleep(time.Second)
+			//log.Println("G01 Y-" + strconv.Itoa(1) + " F50\n")
 		}
 
 	}
@@ -174,7 +156,8 @@ func main(){
 
 	time.Sleep(time.Second/2)
 
-
+	f.Write([]byte("M03 F50\n"))
+	f.Write([]byte("G00 X-"+strconv.Itoa(w)+" Y"+strconv.Itoa(h)+"\n"))
 	/*
 
 	//level := "L100"
